@@ -9,7 +9,7 @@
     "url": "https://github.com/NandoScout/node-api-generator-mysql"
   },
   "homepage": "https://github.com/NandoScout/node-api-generator-mysql/blob/main/README.md",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
@@ -35,6 +35,6 @@
     "express": "^4.17.2",
     "mysql2": "^2.3.3",
     "pluralize": "^8.0.0",
-    "sequelize": "^6.15.0"
+    "sequelize": "^6.15.1"
   }
 }
