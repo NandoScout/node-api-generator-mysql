@@ -4,9 +4,6 @@
   "description": "Generates automatically an API REST from MySQL database",
   "author": "Fernando Broqua <fernandobroqua@gmail.com (https://www.linkedin.com/in/fernandobroqua)>",
   "license": "MIT",
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
-  },
   "repository": "git://github.com/NandoScout/node-api-generator-mysql.git",
   "homepage": "https://github.com/NandoScout/node-api-generator-mysql/blob/main/README.md",
   "main": "index.js",
