@@ -9,6 +9,12 @@ class DynamicControllers {
     database = null
     controllers = {}
 
+    /**
+     * Creates DynamicControllers object, generate controllers from database schema
+     * using Sequelize models of each Table
+     * @param {Database} database 
+     * @returns {DynamicControllers}
+     */
     static async create(database) {
         if (database instanceof Database) {
             let ctrl = new DynamicControllers();
@@ -24,6 +30,13 @@ class DynamicControllers {
         
     }
 
+    /**
+     * Async method to create and push controller for one table / model
+     * Provides each controller with methods: getAll, getOne, addOne, 
+     * modifyOne and deleteOne
+     * @param {Table} table 
+     * @returns 
+     */
     create(table) {
         if (table instanceof Table) {
             utils.logdebug(`** Generating Controller for table ${table.name}`);
@@ -58,11 +71,15 @@ class DynamicControllers {
             return null;
         }
     }
-
-    getController(table) {
-        return DynamicControllers.getController(table,this);
-    }
     
+    /**
+     * Static method to get Sequelize where condition for 
+     * any request params, method and table
+     * @param {Table} table 
+     * @param {CONF.METHOD} method 
+     * @param {*} req 
+     * @returns controller object
+     */
     static getRequestCondition(table,method,req) {
         let _t = Database.constants.TABLE_TYPE;
         let cond = {};
@@ -88,6 +105,21 @@ class DynamicControllers {
         return cond;
     }
 
+    /**
+     * Get specific controller for one table
+     * @param {Table} table 
+     * @returns controller object
+     */
+    getController(table) {
+        return DynamicControllers.getController(table,this);
+    }
+
+    /**
+     * Static method to get specific controller for one table
+     * @param {Table} table 
+     * @param {DynamicControllers} controllerObject 
+     * @returns controller object
+     */
     static getController(table,controllerObject) {
         let tableName = table instanceof Table ? table.name : table;
         if (typeof controllerObject.controllers[tableName] === 'undefined') {

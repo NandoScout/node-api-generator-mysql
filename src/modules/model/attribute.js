@@ -15,6 +15,12 @@ class Attribute {
     constructor(){
 
     }
+    /**
+     * Creates an Attribute object from database column info
+     * @param {Table} parent 
+     * @param {string} dbattr 
+     * @returns {Attribute}
+     */
     static async create(parent,dbattr) {
         let attr = new Attribute();
         attr.table = parent;
@@ -23,6 +29,7 @@ class Attribute {
         return false;
     }
 
+    /** Maps database columno object to Attribute properties */
     setAttributeDataFromDB(dbattr) {
         this.dbattr = dbattr;
         this.name = dbattr.Field;
@@ -45,6 +52,11 @@ class Attribute {
         return this.name === CONF.ATTR_MODIFIEDAT;
     }
 
+    /**
+     * Build Sequelize field definition from current attribute 
+     * including validation and default values
+     * @returns Sequelize definition
+     */
     getSequelizeDefinition() {
         let _def = {};
         _def['field'] = this.name;
@@ -63,15 +75,17 @@ class Attribute {
         return _def;
     }
 
+    /** Get Sequelize validation definition */
     getSequelizeValidation(sqztype) {
         let _v = {}
         if (sqztype instanceof DataTypes.INTEGER)
             _v['isInt'] = true;
         if (!this.nullable)
             _v['notNull'] = true;
-        return null;
+        return _v;
     }
 
+    /** Get Sequelize default definition */
     getSequelizeDefault(sqztype) {
         if (this.default !== null) {
             if (this.isCreatedAt() || this.default.toLowerCase().startsWith('current_timestamp'))
@@ -85,10 +99,20 @@ class Attribute {
         return null;
     }
     
+    /** 
+     * Get Sequelize DataType from attribute database type 
+     * @returns {DataTypes}
+     */
     getSequelizeType() {
         return Attribute.getSequelizeTypeFromMySql(this.type);
     }
 
+    /**
+     * Maps MySql column datatype to Sequelize DataTypes
+     * It also cares of datatype modifiers.
+     * @param {string} dbtype full database column type
+     * @returns {DataTypes}
+     */
     static getSequelizeTypeFromMySql(dbtype) {
         let type = dbtype.toLowerCase().split(/[ ()]+/);
         var _t = null;

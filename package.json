@@ -1,13 +1,13 @@
 {
   "name": "api-rest-entrypoint-generator-from-mysql",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Generates automatically an API REST from MySQL database",
   "author": "Fernando Broqua <fernandobroqua@gmail.com (https://www.linkedin.com/in/fernandobroqua)>",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/NandoScout/node-api-generator-mysql"
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
   },
+  "repository": "git://github.com/NandoScout/node-api-generator-mysql.git",
   "homepage": "https://github.com/NandoScout/node-api-generator-mysql/blob/main/README.md",
   "main": "index.js",
   "scripts": {
@@ -36,5 +36,8 @@
     "mysql2": "^2.3.3",
     "pluralize": "^8.0.0",
     "sequelize": "^6.15.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }

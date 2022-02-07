@@ -11,6 +11,14 @@ class Relation {
     constructor() {
 
     }
+    /**
+     * Creates a Relation object. 
+     * If pass a type, won't try to identify it
+     * @param {Table} table1 
+     * @param {Table} table2 
+     * @param {CONF.REL_TYPE} type 
+     * @returns 
+     */
     static async create(table1, table2, type = null) {
         if (type !== null && !Object.values(CONF.REL_TYPE).includes(type))
             throw "Error: invalid relation type"
@@ -32,6 +40,13 @@ class Relation {
         return rel.type !== CONF.REL_TYPE.none ? rel : false;
     }
 
+    /**
+     * Identify which kind of relationship exists between
+     * table1 and table2
+     * @param {Table} table1 
+     * @param {Table} table2 
+     * @returns {CONF.REL_TYPE} relation type
+     */
     identifyRelationType(table1, table2) {
         if (this.type === CONF.REL_TYPE.none) {
             if (table1.hasFK() || table2.hasFK()) {
@@ -56,6 +71,12 @@ class Relation {
         return this.type;
     }
 
+    /**
+     * Set needed data and push relation in both tables of it
+     * @param {Table} table1 
+     * @param {Table} table2 
+     * @param {*} type 
+     */
     setRelationData(table1, table2,type) {
         if (type !== CONF.REL_TYPE.none) {
             this.table1 = table1;
@@ -79,6 +100,10 @@ class Relation {
         }
     }
     toString = () => this._toString(true)
+    
+    /**
+     * Show in console required routes info
+     */
     toLog() {
         console.log(this._toString(false));
     }

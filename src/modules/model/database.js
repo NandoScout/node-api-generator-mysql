@@ -27,6 +27,10 @@ class Database {
         this.sqz = new Sequelize(this.config);
     }
 
+    /**
+     * Test connection to database from config info
+     * @returns {Boolean} success connection or not
+     */
     async tryConnect() {
         try {
             await this.sqz.authenticate();
@@ -39,6 +43,12 @@ class Database {
         return this.authorized;
     }
 
+    /**
+     * Create Database object, query database and generate entire schema structure
+     * This don't creates models of Sequelize
+     * @param {*} config (optional) database config
+     * @returns {Database} database object 
+     */
     static async create(config) {
         const db = new Database(config);
         if (db !== false) {
@@ -53,6 +63,11 @@ class Database {
         return null;
     }
 
+    /**
+     * Verify table name achieve name rules
+     * @param {*} table table name or table object from database query
+     * @returns 
+     */
     static isValidTable(table) {
         const re_validTable = new RegExp('^'+CONF.VALID_TABLENAME_REGEX+'$');
         return table instanceof Object
@@ -60,12 +75,16 @@ class Database {
             : re_validTable.test(table) ;
     }
 
+    /** Add table to tablesTyped property, by type */
     addTableTyped(table) {
         if (!this.tablesTyped[table.type])
             this.tablesTyped[table.type] = [];
         this.tablesTyped[table.type].push(table)
     }
 
+    /**
+     * Async method to get all tables from database
+     */
     async getTablesFromDB() {
         let _q = 'SHOW TABLES';
         try {
@@ -82,6 +101,9 @@ class Database {
         }
     }
 
+    /**
+     * Async method to get all fields info of one table
+     */
     async getAttributes(tableName) {
         let _q = `SHOW COLUMNS FROM ${tableName}`;
         try {
@@ -95,6 +117,9 @@ class Database {
         }
     }
 
+    /**
+     * Async method to generate entire Schema (Tables, Attributes, Relationships)
+     */
     async generateSchema() {
         await this.getTablesFromDB();
         if (this._tables.length > 0 && utils.nonEmptyObject(this._attributes)) {
@@ -105,7 +130,8 @@ class Database {
         }
     }
     /**
-     * Fill Database.tables: build basic table and attribute objects and identify Model tables
+     * Build basic tables and attributss objects and identify tables 
+     * of type Model and fill Database.tables property
      */
     async buildTables() {
         if (this._tables.length > 0 && utils.nonEmptyObject(this._attributes)) {
@@ -120,6 +146,11 @@ class Database {
         return false
     }
 
+    /**
+     * Async method to build one Table object (not creates Sequelize models)
+     * @param {string} tableName 
+     * @returns Table object
+     */
     async buildTable(tableName) {
         let tbl = await Table.create(this,tableName,this._attributes[tableName]);
         if (tbl instanceof Table) {
@@ -130,6 +161,10 @@ class Database {
         return tbl;
     }
 
+    /**
+     * Build Relation objects between Table objects
+     * @returns {Boolean} result of success task
+     */
     async buildRelations() {
         if (utils.nonEmptyObject(this.tables)) {
             this.relations = []
@@ -158,7 +193,10 @@ class Database {
 
     }
 
-
+    /**
+     * Async methot to build one Relation object between 
+     * two tables (if exist). Also sets undefined table types.
+     */
     async buildRelation(table1,table2) {
         let rel = null;
         if (table1.hasFK() || table2.hasFK()) {
@@ -171,6 +209,10 @@ class Database {
         return rel;
     }
     
+    /**
+     * Generates all Sequelize models from Table and Relation objects
+     * @returns list of Sequelize models, or false
+     */
     async generateModels() {
         if (utils.nonEmptyObject(this.tables)) {
             utils.logdebug(`* Start to generate Sequelize Models`);
@@ -184,6 +226,11 @@ class Database {
         return false
     }
 
+    /**
+     * Async method to generate one Sequelize model from one table
+     * @param {Table} table 
+     * @returns 
+     */
     async buildModel(table) {
         let mod = null;
         if (table instanceof Table) {
@@ -195,6 +242,9 @@ class Database {
         return mod;
     }
     
+    /**
+     * Show in console required routes info
+     */
     toLog() {
         if (this._tables.length === 0) {
             console.log(`Trying to find models from mysql...\n`);

@@ -21,6 +21,14 @@ class Table {
     constructor(){
 
     }
+
+    /**
+     * Creates Table object with all Attribute objects
+     * @param {Database} parent 
+     * @param {string} name 
+     * @param {string} dbattrs 
+     * @returns 
+     */
     static async create(parent,name,dbattrs) {
         let tbl = new Table;
         tbl.database = parent;
@@ -30,6 +38,12 @@ class Table {
         return tbl;
         return false;
     }
+
+    /**
+     * Build Attribute object from column database info
+     * @param {string} dbattr full database datatype
+     * @returns 
+     */
     async buildAttribute(dbattr) {
         let attr = await Attribute.create(this,dbattr);
         if (attr instanceof Attribute) {
@@ -46,6 +60,10 @@ class Table {
         return attr;
     }
     
+    /**
+     * Creates or define Sequelize Model equivalent to Table object
+     * @returns {Sequelize.Model} sequelize model or null
+     */
     async buildSequelizeModel() {
         utils.logdebug(`** Start creating Sequelize Model for table ${this.name}`);
         let _def = this.getSequelizeDefinition();
@@ -79,18 +97,39 @@ class Table {
         return null;
     }
 
+    /**
+     * Has PrimaryKey?
+     * @returns {Boolean}
+     */
     hasPK() {
         return this.pk instanceof Attribute;
     }
+    /**
+     * Has Foreign Keys?
+     * @returns {Boolean}
+     */
     hasFK() {
         return this.fk && this.fk.length > 0;
     }
+    /**
+     * Has CreatedAt field?
+     * @returns {Boolean}
+     */
     hasCreatedAt() {
         return this.createdAt instanceof Attribute;
     }
+    /**
+     * Has ModifiedAt field?
+     * @returns {Boolean}
+     */
     hasModifiedAt() {
         return this.modifiedAt instanceof Attribute;
     }
+    /**
+     * For tables of Extension type, returns wich Table
+     * it is an extension of.
+     * @returns {Table}
+     */
     getExtendedTable() {
         if (this.type === CONF.TABLE_TYPE.extension) {
             let _r = this.rel_is[CONF.REL_TYPE.dependency_1];
@@ -101,6 +140,11 @@ class Table {
         return null;
     }
     
+    /**
+     * For tables of Relation type, returns both tables
+     * it is relating / associating.
+     * @returns {[Table,Table]} first table, second table
+     */
     getRelatedTables() {
         if (this.type === CONF.TABLE_TYPE.relation) {
             let _r = this.rel_is[CONF.REL_TYPE.dependency_n];
@@ -114,6 +158,11 @@ class Table {
         return null;
     }
     
+    /**
+     * For tables of Relation type, returns ForeignKeys of 
+     * both tables it is relating / associating.
+     * @returns {[Attribute,Attribute]} first table FK, second table FK
+     */
     getRelatedForeignKeys() {
         if (this.type === CONF.TABLE_TYPE.relation) {
             let _r = this.getRelatedTables();
@@ -127,18 +176,29 @@ class Table {
         return null;
     }
     
+    /**
+     * Push a relation for model Table, grouping by relation type
+     * @param {Relation} rel 
+     */
     addRelation(rel) {
         if (!this.rel[rel.type])
             this.rel[rel.type] = [];
         this.rel[rel.type].push(rel);
     }
     
+    /**
+     * Push a relation for non model Table, grouping by relation type
+     * @param {Relation} rel 
+     */
     addRelationIs(rel) {
         if (!this.rel_is[rel.type])
             this.rel_is[rel.type] = [];
         this.rel_is[rel.type].push(rel);
     }
 
+    /**
+     * Identify if current Table type is model
+     */
     identifyModelTable() {
         if (this.type === CONF.TABLE_TYPE.unknown) {
 
@@ -165,6 +225,9 @@ class Table {
         }
     }
 
+    /**
+     * Identify if unknown type Table is extension or relation
+     */
     identifyNonModelTables(rel) {
         if (rel.type !== CONF.REL_TYPE.none && this.type !== CONF.TABLE_TYPE.model && this.type === CONF.TABLE_TYPE.unknown) {
             switch (rel.type) {
@@ -182,6 +245,11 @@ class Table {
         }
     }
 
+    /**
+     * Build Sequelize definition from current table and 
+     * attributes, needed to create it
+     * @returns Sequelize definition
+     */
     getSequelizeDefinition() {
         let _def = {};
         for (let attr in this.attrs) {
@@ -190,6 +258,11 @@ class Table {
         return _def;
     }
 
+    /**
+     * Build Sequelize options from current table, 
+     * needed to create it
+     * @returns Sequelize definition
+     */
     getSequelizeOptions() {
         let _def = {};
         _def['tableName'] = this.name;
@@ -206,6 +279,9 @@ class Table {
         return _def;
     }
 
+    /**
+     * Show in console required routes info
+     */
     toLog() {
         switch (this.type) {
             case CONF.TABLE_TYPE.relation:

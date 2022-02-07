@@ -29,6 +29,10 @@ class DynamicApi {
         }
     }
 
+    /**
+     * Get server port from configuration or get default
+     * @returns port where to serve Express applications
+     */
     getServerPort() {
         if (typeof this.config.serverport === 'undefined') {
             if (process.env.NODE_ENV === "production") {
@@ -40,6 +44,10 @@ class DynamicApi {
         return this.config.serverport;
     }
 
+    /**
+     * Get server API root path or get default
+     * @returns api root path, starting with "/"
+     */
     getApiRootPath() {
         if (typeof this.config.apirootpath === 'undefined') {
             return  process.env.API_ROOTPATH || CONF.DEFAULT_API_ROOTPATH;
@@ -47,6 +55,14 @@ class DynamicApi {
         return this.config.apirootpath;
     }
 
+    /**
+     * Creates DynamicApi object, generate routes and controllers from database schema
+     * Logs to console all routes
+     * @param {Express()} app express created application (not running)
+     * @param {Database} database build object 
+     * @param {Object} config (optional) server config
+     * @returns {DynamicApi}
+     */
     static async create(app,database,config) {
         let api = new DynamicApi(app,database,config);
         if (api !== false) {
@@ -64,6 +80,11 @@ class DynamicApi {
         return null;
     }
 
+    /**
+     * Setup Express app adding router, handling wrong path and errors.
+     * Start Express Server at configured or default port
+     * @param {*} callbacks usefull to capture Express errors ( TODO: add callbacks and take them from config )
+     */
     run(callbacks={}) {
         utils.logdebug(`* Running in ${process.env.NODE_ENV || 'development'} mode`)
         let _port = this.getServerPort();
@@ -79,15 +100,15 @@ class DynamicApi {
         })
         utils.logdebug(`* Setted up wrong url response.`);
         app.use(function(err, req, res, next) {
-            // if (typeof callbacks.onError === 'function') 
-            //     callbacks.onError(err, req, res);
-            // else {
-                // res.status(500).send({ error: 'Something failed!' });
+            if (typeof callbacks.onError === 'function') 
+                callbacks.onError(err, req, res);
+            else {
+                res.status(500).send({ error: 'Something failed!' });
                 res.locals.error = err;
                 const status = err.status || 500;
                 res.status(status);
                 res.render('error');
-            // }
+            }
             console.log('Request failed:',err)
         })
         utils.logdebug(`* Setted up error handler.`);
@@ -96,6 +117,9 @@ class DynamicApi {
         })
     }
     
+    /**
+     * Show in console required routes info
+     */
     toLog() {
         var prevRoute = '/';
         Object.values(Object.values(this.dynamicRoutes.routes)).sort().forEach(ctrl => {

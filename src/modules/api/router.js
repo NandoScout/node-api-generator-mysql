@@ -13,6 +13,13 @@ class DynamicRoutes {
     router = null
     routes = {}
     dynamicControllers = null
+
+
+    /**
+     * Creates DynamicRoutes object, generate routes from database schema
+     * @param {DynamicApi} api 
+     * @returns {DynamicRoutes}
+     */
     static async create(api) {
         if (api.database instanceof Database && api.dynamicControllers instanceof DynamicControllers) {
             this.api = api;
@@ -35,6 +42,12 @@ class DynamicRoutes {
             return null;
         }
     }
+
+    /**
+     * Async method to generate routes and link to controllers for one table
+     * @param {Table} table 
+     * @returns {DynamicRoutes}
+     */
     async create(table) {
         if (table instanceof Table) {
             utils.logdebug(`** Generating Express Route for table ${table.name}`);
@@ -54,6 +67,14 @@ class DynamicRoutes {
             return null;
         }
     }
+
+    /**
+     * Build api route for Table and request method and push it
+     * in routes property, group by table and method (that order)
+     * @param {Table} table 
+     * @param {CONF.METHOD} method 
+     * @returns 
+     */
     getRoute(table,method) {
         if (!(utils.nonEmptyObject(this.routes) 
             && typeof this.routes[table.name] !== 'undefined'
@@ -107,12 +128,21 @@ class DynamicRoutes {
         this.routes[table.name][method] = route;
         return route;
     }
+
+    /**
+     * Get Sequelize Router object
+     * @returns {Sequelize.Router}
+     */
     getRouter() {
         if (!this.router)
             console.error('Create a Router with DynamicRoutes.create before get it');
         return this.router
     }
 
+    /**
+     * Get an object with all api routes information group by table and method
+     * @returns {Object} has table, method, path and link to try (test url)
+     */
     getApiInfo() {
         let out = {};
         try {
