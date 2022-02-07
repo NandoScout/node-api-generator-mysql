@@ -26,7 +26,7 @@ Luego emplea la misma estructura para generar las rutas y los controladores para
 - se pueden hacer búsquedas solo por un id en las tablas de relaciones, indicando **cero (0)** en el id referente a la otra tabla de la relación (ej. /organizations/0/products/0); esto permite también listar todos los elementos de las tablas de relaciones
 - se buscó la forma correcta de definir dinámicamente la base de datos en Sequelize 
 ### ¿Por qué Sequelize?
-Era necesario realizar algo diferente a lo que ya existe disponible (ej. [Kaleboo Framework](https://github.com/gonzaloaizpun/KalebooFramework/blob/master/readme.md)). Con Sequelize se logra una más rápida y sencilla adopción de nuevas funcionalidades así como una drástica reducción del código de los controladores y validación de datos.
+Era necesario realizar algo diferente a lo que ya existe disponible (ej. [Kaleboo Framework](https://github.com/gonzaloaizpun/KalebooFramework/blob/master/readme.md) - mejor o peor, pero este fue creado por completo por mí). Con Sequelize se logra una más rápida y sencilla adopción de nuevas funcionalidades así como una drástica reducción del código de los controladores y validación de datos.
 También permite realizar en forma más sencila la migración a otros motores de bases de datos SQL.
 ### ¿Qué queda por hacer?
 - Sería bueno mejorar el sistema de logger, aunque no necesario
