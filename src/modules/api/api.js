@@ -7,7 +7,6 @@ const Database = require('../model/database');
 const DynamicControllers = require('./controller');
 const DynamicRoutes = require('./router');
 const e = require('express');
-const { route } = require('../../../../../Clase10/node-mysql-api-crud/contactosRoutes');
 
 
 class DynamicApi {
