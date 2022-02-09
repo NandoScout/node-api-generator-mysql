@@ -1,16 +1,30 @@
 # GENERADOR DE API REST EN NODEJS PARA MYSQL
-Generador automático de entry points (GET,POST,PUT,DELETE,PATCH) de API REST a partir de una base de datos MySQL existente que debe respetar determinada nomenclatura de tablas y atributos.
+Generador automático de entry points (GET,POST,PUT,DELETE,PATCH) de API REST a partir de una base de datos MySQL existente que debe respetar determinada nomenclatura de tablas y atributos. Se encuentra disponible en [npmjs.com](https://www.npmjs.com/package/api-rest-entrypoint-generator-from-mysql) (api-rest-entrypoint-generator-from-mysql).
 _Este desarrollo fue motivado por un desafío planteado a mi persona._
 
-1. [Funcionamiento](#funcionamiento)
-2. [Funciones](#funciones)
-3. [Nomenclatura MySQL](#nomenclatura-mysql)
+1. [Instalación](#instalacion)
+2. [Funcionamiento](#funcionamiento)
+3. [Funciones](#funciones)
+4. [Nomenclatura MySQL](#nomenclatura-mysql)
    - [¿Por qué Sequelize?](#por-qué-sequelize)
    - [¿Qué queda por hacer?](#qué-queda-por-hacer)
-4. [Uso](#uso)
-5. [Configuracion mediante archivo .env](#configuracion-mediante-archivo-env)
-6. [Salida esperada](#salida-esperada)
-7. [Listado de Entry Points - Ejemplo](#listado-de-entry-points)
+5. [Uso](#uso)
+6. [Configuracion mediante archivo .env](#configuracion-mediante-archivo-env)
+7. [Salida esperada](#salida-esperada)
+8. [Listado de Entry Points - Ejemplo](#listado-de-entry-points)
+
+## INSTALACION
+El módulo se puede instalar vía npm de la siguiente forma:
+```console
+npm i api-rest-entrypoint-generator-from-mysql
+```
+Estas son las dependencias:
+* [dotenv](https://www.npmjs.com/package/dotenv)
+* [express](https://www.npmjs.com/package/express)
+* [body-parser](https://www.npmjs.com/package/body-parser)
+* [sequelize](https://www.npmjs.com/package/sequelize)
+* [mysql2](https://www.npmjs.com/package/mysql2)
+* [pluralize](https://www.npmjs.com/package/pluralize)
 
 ## FUNCIONAMIENTO
 A partir de una configuración de conexión a la base de datos MySQL (y tomando algunos valores configurables a través de un archivo .env) y una app de Express JS, la única función run() recrea la estructura de la misma teniendo en cuenta relaciones (ver [NOMENCLATURA](#nomenclatura-sql)), campos clave, campos timestamp de creación y modificación para definirla en Sequelize. 
@@ -30,6 +44,7 @@ Era necesario realizar algo diferente a lo que ya existe disponible (ej. [Kalebo
 También permite realizar en forma más sencila la migración a otros motores de bases de datos SQL.
 ### ¿Qué queda por hacer?
 - Sería bueno mejorar el sistema de logger, aunque no necesario
+- Agregar callbacks / hooks en la configuración para acceder a momentos y datos importantes permitiendo mayor versatilidad del módulo
 - Aún no genera las asociaciones de Sequelize que permite extender la funcionalidad de los objetos del modelo (quedó relegado por falta de tiempo)
 - Probar aún más, siempre es bueno
 
