@@ -43,9 +43,11 @@ Luego emplea la misma estructura para generar las rutas y los controladores para
 Era necesario realizar algo diferente a lo que ya existe disponible (ej. [Kaleboo Framework](https://github.com/gonzaloaizpun/KalebooFramework/blob/master/readme.md) - mejor o peor, pero este fue creado por completo por mí). Con Sequelize se logra una más rápida y sencilla adopción de nuevas funcionalidades así como una drástica reducción del código de los controladores y validación de datos.
 También permite realizar en forma más sencila la migración a otros motores de bases de datos SQL.
 ### ¿Qué queda por hacer?
-- Sería bueno mejorar el sistema de logger, aunque no necesario
-- Agregar callbacks / hooks en la configuración para acceder a momentos y datos importantes permitiendo mayor versatilidad del módulo
+- Por seguridad, enmascarar los mensajes de error ya que se brinda información excesiva de la estructura de datos por detrás
+- En POST de relaciones, utilizar el id de la url o quitarlo de la misma (actualmente solo tiene en cuenta lo enviado en el body)
 - Aún no genera las asociaciones de Sequelize que permite extender la funcionalidad de los objetos del modelo (quedó relegado por falta de tiempo)
+- Agregar callbacks / hooks en la configuración para acceder a momentos y datos importantes permitiendo mayor versatilidad del módulo
+- Sería bueno mejorar el sistema de logger, aunque no necesario
 - Probar aún más, siempre es bueno
 
 ## NOMENCLATURA MySQL
